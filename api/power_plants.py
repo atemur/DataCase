@@ -1,44 +1,55 @@
 import requests
 import json
-from core.settings import BASE_URL, ENDPOINTS, START_DATE, END_DATE
+from core.settings import BASE_URL, ENDPOINTS, start_date, end_date, organizationIDs
 from api.auth import tgt
 
-def get_santral_and_eic_by_orgId(organizationId, startDate, endDate, TGT):
-    try:
-        response = requests.post(
-            url= BASE_URL + ENDPOINTS["POWER_PLANTS"],
-            headers={
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "TGT": TGT
-            },
-            data=json.dumps({
-                "organizationId": organizationId,
-                "startDate": str(startDate),
-                "endDate" : str(endDate),
-            })
-        )
-        return response.text
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
-        return None
-    
-start = START_DATE
-end = END_DATE
+class Organisation:
+    def __init__(self, org_id, tgt, endpoint):
+        self.org_id = org_id
+        self.tgt = tgt
+        self.url = BASE_URL + endpoint
+        self.headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "TGT": tgt
+        }
 
-"""list1 = get_santral_and_eic_by_orgId(13119, start, end, tgt)
-list2 = get_santral_and_eic_by_orgId(7902, start, end, tgt)
-list3 = get_santral_and_eic_by_orgId(4069, start, end, tgt)
-list4 = get_santral_and_eic_by_orgId(20880, start, end, tgt)
-list5 = get_santral_and_eic_by_orgId(16287, start, end, tgt)
+    def registered_centrals(self, start_date, end_date):
+        try:
+            response = requests.post(
+                url=self.url,
+                headers=self.headers,
+                data=json.dumps({
+                    "startDate": str(start_date),
+                    "endDate" : str(end_date),
+                    "organizationId": self.org_id,
+                })
+            )
+            return response.text
+        except Exception as err:
+            print(err)
 
-for x in json.loads(list1)["items"]:
-    print(x)
-for x in json.loads(list2)["items"]:
-    print(x)
-for x in json.loads(list3)["items"]:
-    print(x)
-for x in json.loads(list4)["items"]:
-    print(x)
-for x in json.loads(list5)["items"]:
-    print(x)"""
+"""    def get_uevcb(self):
+    def live_santral(self):"""
+
+for org_id in organizationIDs:
+    organisation = Organisation(org_id=org_id, tgt=tgt, endpoint=ENDPOINTS["POWER_PLANTS"])
+    data = organisation.registered_centrals(start_date, end_date)
+    for x in json.loads(data)["items"]:
+        print(f"Central Id: {x['id']}, EIC: {x['eic']}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
