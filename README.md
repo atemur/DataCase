@@ -14,4 +14,4 @@ This project is designed to interact with the EPIAS Transparency Platform. Make 
 
 This project is a data analytics and visualization tool developed using **Python** and **Streamlit**, focused on retrieving and visualizing electricity market data from the **EPİAŞ Transparency Platform API**. 
 
-It allows users to select energy organizations and view data such as:
+It allows users to select energy organizations and view data.
